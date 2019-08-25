@@ -5,7 +5,7 @@
       src="https://placekitten.com/300/100"
     />
     <form-component :initialFormData="{}" @form-clicked="handleFormClicked"></form-component>
-    <list-component :incomingListData="userArray" @list-clicked="handleListClicked"></list-component>
+    <list-component :incomingListData="userArray" @list-clicked="handleListClicked" @delete-item="handleDeleteListItem"></list-component>
   </div>
 </template>
 
@@ -34,9 +34,16 @@ export default {
     handleWasClicked: function(_data) {
       alert(_data);
     },
-    
+
     handleListClicked: function(_data) {
       alert(_data.name.firstName + " " + _data.name.lastName);
+    },
+    handleDeleteListItem: function(_item) {
+      console.log('deleteListElement', _item);
+      let result = this.userArray.filter(element => {
+        return element.id != _item.id;
+      });
+      this.userArray = result;
     },
 
     handleFormClicked: function(_data) {

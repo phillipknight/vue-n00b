@@ -2,8 +2,11 @@
   <div>
     <h3>Show List Of Users</h3>
     <ol>
-      <li v-for="e in this.incomingListData" :key="e.id">
-        <span @click="$emit('list-clicked', e)">{{ e.name.firstName }} {{ e.name.lastName }}</span>
+      <li v-for="listItem in this.incomingListData" :key="listItem.id">
+        <span
+          @click="handleItemClicked(listItem)"
+        >{{ listItem.name.firstName }} {{ listItem.name.lastName }}</span>
+        <button @click="handleDeleteItemClicked(listItem)">DELETE</button>
       </li>
     </ol>
   </div>
@@ -15,7 +18,14 @@ export default {
   props: {
     incomingListData: Array
   },
-  methods: {}
+  methods: {
+    handleItemClicked: function(_listItem) {
+      this.$emit('list-clicked', _listItem);
+    },
+    handleDeleteItemClicked: function(_listItem) {
+      this.$emit('delete-item', _listItem);
+    }
+  },
 };
 </script>
 
