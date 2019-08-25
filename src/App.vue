@@ -1,13 +1,17 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png" />
-
+    <img
+      alt="random image of cat to serve as a placeholder for something meaningful"
+      src="https://placekitten.com/300/100"
+    />
+    <form-component :initialFormData="{}" @form-clicked="handleFormClicked"></form-component>
     <list-component :incomingListData="userArray" @list-clicked="handleListClicked"></list-component>
   </div>
 </template>
 
 <script>
 import ListComponent from "./components/ListComponent.vue";
+import FormComponent from "./components/FormComponent.vue";
 
 export default {
   name: "app",
@@ -23,49 +27,25 @@ export default {
     };
   },
   components: {
-    ListComponent
+    ListComponent,
+    FormComponent
   },
   methods: {
-    handleWasClicked: function(_name, _date) {
-      alert(`that component was clicked and the name is ${_name} ${_date}`);
+    handleWasClicked: function(_data) {
+      alert(_data);
     },
+    
     handleListClicked: function(_data) {
-      alert(_data.name.firstName);
+      alert(_data.name.firstName + " " + _data.name.lastName);
     },
-    makeCurrent: function(_item) {
-      this.current = _item;
-    },
-    editItem: function(_item) {
-      this.newUser = JSON.parse(JSON.stringify(_item));
-    },
-    cancelAction: function() {
-      this.newUser = { name: {} };
-    },
-    updateItem: function(_item) {
-      let edited = this.userArray.map(item => {
-        if (item.id == _item.id) {
-          return { ..._item };
-        } else {
-          return item;
-        }
-      });
 
-      this.userArray = edited;
-      this.newUser = { name: {} };
-    },
-    addItem: function() {
+    handleFormClicked: function(_data) {
+      console.log(_data);
+      // add the item to the array
       this.userArray.push({
-        name: this.newUser.name,
+        name: _data,
         id: new Date().getTime()
       });
-      // clear UI
-      this.newUser = { name: {} };
-    },
-    deleteItem: function(_item) {
-      let result = this.userArray.filter(element => {
-        return element.id != _item.id;
-      });
-      this.userArray = result;
     }
   }
 };
