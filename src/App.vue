@@ -4,12 +4,26 @@
       alt="random image of cat to serve as a placeholder for something meaningful"
       src="https://placekitten.com/300/100"
     />
-    <form-component :initialFormData="{}" @form-clicked="handleFormClicked"></form-component>
     <list-component
       :incomingListData="userArray"
       @list-clicked="handleListClicked"
       @delete-item="handleDeleteListItem"
+      @edit-item="handleEditListItem"
     ></list-component>
+    <template v-if="inEditMode">
+      <form-component
+        :initialFormData="editingUser"
+        @form-clicked="handleFormEdit"
+        @form-cancelled="handleFormCancelled"
+      ></form-component>
+    </template>
+    <template v-else>
+      <form-component
+        :initialFormData="{}"
+        @form-clicked="handleFormClicked"
+        @form-cancelled="handleFormCancelled"
+      ></form-component>
+    </template>
   </div>
 </template>
 
@@ -19,28 +33,33 @@ import FormComponent from "./components/FormComponent.vue";
 
 export default {
   name: "app",
-  data: function() {
+  data() {
     return {
+      editingUser: {},
       userArray: [
         { id: 0, name: { firstName: "Ada", lastName: "Lovelace" } },
         { id: 1, name: { firstName: "Alan", lastName: "Turing" } },
         { id: 2, name: { firstName: "Grace", lastName: "Hopper" } }
-      ],
-      current: {},
-      newUser: {}
+      ]
     };
+  },
+  computed: {
+    inEditMode: function() {
+      return this.editingUser.id != undefined ? true : false;
+    }
   },
   components: {
     ListComponent,
     FormComponent
   },
   methods: {
-    handleWasClicked: function(_data) {
-      alert(_data);
-    },
-
     handleListClicked: function(_data) {
       alert(_data.name.firstName + " " + _data.name.lastName);
+    },
+
+    handleEditListItem: function(_item) {
+      alert(_item.name.firstName + " " + _item.name.lastName);
+      this.editingUser = { ..._item };
     },
     handleDeleteListItem: function(_item) {
       console.log("deleteListElement", _item);
@@ -56,6 +75,24 @@ export default {
         name: _data,
         id: new Date().getTime()
       });
+    },
+
+    handleFormEdit: function(_item) {
+      console.log("handleFormEdit", _item);
+      let edited = this.userArray.map(item => {
+        if (item.id == _item.id) {
+          return { ..._item };
+        } else {
+          return item;
+        }
+      });
+      this.userArray = edited;
+      this.editingUser = {};
+    },
+
+    handleFormCancelled: function(_data) {
+      console.log(_data);
+      this.editingUser = {};
     }
   }
 };

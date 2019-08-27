@@ -14,11 +14,11 @@
 export default {
   name: "FormComponent",
   props: {
-    initialFormData: Object
+    initialFormData: Object,
   },
-  data: function() {
+  data() {
     return {
-      userData: this.initialFormData.name || {}
+      userData: {}
     };
   },
   computed: {
@@ -28,8 +28,10 @@ export default {
         : "Create User";
     },
     invalidInput: function() {
-      if(!this.userData.firstName || !this.userData.lastName) {
+      if (!this.userData.firstName || !this.userData.lastName) {
         return true;
+      } else {
+        return false;
       }
     }
   },
@@ -42,7 +44,7 @@ export default {
   },
   methods: {
     handleBtnClicked: function() {
-      let returnVal = {};
+      var returnVal = {};
       if (this.initialFormData.id !== undefined) {
         returnVal = {
           id: this.initialFormData.id,
@@ -51,7 +53,7 @@ export default {
       } else {
         returnVal = this.userData;
       }
-      this.$emit("form-clicked", this.userData);
+      this.$emit("form-clicked", returnVal);
       // clear the ui
       this.userData = {};
     },
